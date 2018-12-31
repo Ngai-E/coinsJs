@@ -2,6 +2,9 @@ let assets;
 let coins = '';  //will hold comma separated list of coin ids for the socket to use
 let timestamps;
 let refresh = true; // used to refresh the page
+let currencySymbol = '$';
+let preferredCurrency = 'united-states-dollar';
+let conversionRates = 1;
 class crypto {
 	static getAssetsInfo(callback){
 		//alert('test'); //
@@ -179,17 +182,16 @@ function highlightChange(percent){
 
 //function to change the currency
 function changeCurrency(currency){
-
-	//console.log(currency);
+	preferredCurrency = currency;
+	console.log(currency);
 	let url = `https://api.coincap.io/v2/rates/${currency}`;
-	
 	fetch(url)
 		.then(response => {
 			//console.log(response.json());
 			return response.json()
 		})
 		.then(response => {
-			let res = response.data.rateUsd;
+	let res = 										response.data.rateUsd;
 			//console.log(Number(res))
 			assets.forEach(function change(asset){
 				let price = ((Number(asset.priceUsd)) / (Number(res)));
@@ -197,15 +199,15 @@ function changeCurrency(currency){
 				let marketCap = (Number(asset.marketCapUsd)) / (Number(res));
 				let vwap = (Number(asset.vwap24Hr)) / (Number(res));  //not implemented yet
 
-				let symbol = response.data.currencySymbol;
-
-				if(symbol === null)
-					symbol = response.data.symbol;
+				 currencySymbol = response.data.currencySymbol;
+				 conversionRates = Number(res);
+				if(currencySymbol === null)
+					currencySymbol = '';
 
 				//fill in the change
-				document.getElementById(`price${asset.id}`).innerHTML = `<b>price: ${symbol} ${price} </b>`;
-				document.getElementById(`volume${asset.id}`).innerHTML = `Volume(24Hr): ${symbol} ${volume.toFixed(2)}`;
-				document.getElementById(`marketCap${asset.id}`).innerHTML = `Market Cap: ${symbol} ${marketCap.toFixed(2)}`;
+				document.getElementById(`price${asset.id}`).innerHTML = `<b>price: ${currencySymbol} ${price} </b>`;
+				document.getElementById(`volume${asset.id}`).innerHTML = `Volume(24Hr): ${currencySymbol} ${volume.toFixed(2)}`;
+				document.getElementById(`marketCap${asset.id}`).innerHTML = `Market Cap: ${currencySymbol} ${marketCap.toFixed(2)}`;
 			});
 		})
 		.catch(e => {
@@ -229,8 +231,8 @@ function flashColors(id, color){
 		    document.getElementById(id).style.backgroundColor = color;
 		  	setTimeout(function () {
 		    document.getElementById(id).style.backgroundColor = '#f5f5dc';
-		  }, 5000);
-		  }, 5000);
+		  }, 900);
+		  }, 500);
 
 	
 }
@@ -258,11 +260,11 @@ function fillCoinsHTML(asset = assets){
  		cardBody.setAttribute('class', 'card-body');
  		cardBody.innerHTML = `<h4 class="card-title">${coin.rank}. ${coin.name} <small>(${coin.symbol})</small></h4>
             <p class="card-text">
-              <span style="display: block;" id = 'price${coin.id}'><b>price: $ ${Number(coin.priceUsd)} </b></span>
+              <span style="display: block;" id = 'price${coin.id}'><b>price: ${currencySymbol} ${(Number(coin.priceUsd))/ conversionRates} </b></span>
               <span style="display: block;">${highlightChange(Number(coin.changePercent24Hr).toFixed(2))}</span>
               <span style="display: block;">Supply: ${Number(coin.supply).toFixed(2)}</span>
-              <span style="display: block;" id = 'volume${coin.id}'>Volume(24Hr): $ ${Number(coin.volumeUsd24Hr).toFixed(2)}</span>
-              <span style="display: block;" id = 'marketCap${coin.id}'>Market Cap: $ ${Number(coin.marketCapUsd).toFixed(2)}</span>
+              <span style="display: block;" id = 'volume${coin.id}'>Volume(24Hr): ${currencySymbol} ${(Number(coin.volumeUsd24Hr).toFixed(2))/conversionRates}</span>
+              <span style="display: block;" id = 'marketCap${coin.id}'>Market Cap: ${currencySymbol} ${(Number(coin.marketCapUsd).toFixed(2))/conversionRates}</span>
             </p>
             <div class = 'graph' id= '${coin.id}'>Price Graph (7d)</div>`;
 
@@ -378,18 +380,18 @@ function realTimePriceSocket(){
 	        	{
 	        		if(Number(assets[i].priceUsd) < Number(msg[assets[i].id])){
 	        	        		flashColors(assets[i].id, '#689a74' )
-	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: $ ${Number(msg[assets[i].id])} </b>`;
+	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: ${currencySymbol} ${(Number(msg[assets[i].id])/conversionRates)} </b>`;
 	        	    }
 	        	    else if(Number(assets[i].priceUsd) > Number(msg[assets[i].id])){
 	        	        		flashColors(assets[i].id, '#e8939c' );
-	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: $ ${Number(msg[assets[i].id])} </b>`;
+	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: ${currencySymbol} ${(Number(msg[assets[i].id]))/conversionRates} </b>`;
 	        	    }
 	        	}
         }
 
 		  }, 5000); 
         
-        fetchCoins();  // test
+       // fetchCoins();  // test
 
     }
 } //end real time price
@@ -401,7 +403,7 @@ function refresh1(){
 		setTimeout(function (){
 		  refresh = false;
 		  refresh1();
-		},60000);
+		},6000000);
 	}
 
 	else
@@ -416,7 +418,7 @@ function refresh1(){
 
 fetchCoins();  // test
 
-refresh1();
+//refresh1();
 
 
 
