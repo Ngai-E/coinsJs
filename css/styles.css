@@ -31,8 +31,7 @@ footer a {
 .styleCard{
   width: calc(100% - 40px);
   margin: 20px;
-  background-color: beige;
-
+  background-color: #f5f5dc;
 }
 
 #marketcap{

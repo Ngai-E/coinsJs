@@ -1,6 +1,7 @@
 let assets;
 let coins = '';  //will hold comma separated list of coin ids for the socket to use
 let timestamps;
+let refresh = true; // used to refresh the page
 class crypto {
 	static getAssetsInfo(callback){
 		//alert('test'); //
@@ -67,9 +68,10 @@ function fetchCoins(){
 			for (let i = 0; i < assets.length ; i ++){
 				coins += `${assets[i].id},` ;
 			}
-			console.log(coins);
+			//console.log(coins);
 			plotChart(5);
 			fillCoinsHTML();     //design coins html
+			realTimePriceSocket();
 		}
 	});
 
@@ -178,7 +180,7 @@ function highlightChange(percent){
 //function to change the currency
 function changeCurrency(currency){
 
-	console.log(currency);
+	//console.log(currency);
 	let url = `https://api.coincap.io/v2/rates/${currency}`;
 	
 	fetch(url)
@@ -188,7 +190,7 @@ function changeCurrency(currency){
 		})
 		.then(response => {
 			let res = response.data.rateUsd;
-			console.log(Number(res))
+			//console.log(Number(res))
 			assets.forEach(function change(asset){
 				let price = ((Number(asset.priceUsd)) / (Number(res)));
 				let volume = (Number(asset.volumeUsd24Hr)) / (Number(res));
@@ -223,11 +225,12 @@ function findRank(){
 
 //flash background color to indicate increase of decrease
 function flashColors(id, color){
-		let originalColor = document.getElementById(id).style.backgroundColor ;  
-		document.getElementById(id).style.backgroundColor = color;
 		setTimeout(function () {
-		    document.getElementById(id).style.backgroundColor = originalColor;
-		  }, 500);
+		    document.getElementById(id).style.backgroundColor = color;
+		  	setTimeout(function () {
+		    document.getElementById(id).style.backgroundColor = '#f5f5dc';
+		  }, 5000);
+		  }, 5000);
 
 	
 }
@@ -241,7 +244,7 @@ function fillCoinsHTML(asset = assets){
 
 		const card = document.createElement('div') //create a bootstrap card element
 		card.className = 'card styleCard';
-		card.id =`${asset.id}`;
+		card.setAttribute('id', `${coin.id}`);
 
  		const logo = document.createElement('img'); // create the crytocurrency logo
  		//logo.setAttribute('src', `https://chasing-coins.com/api/v1/std/logo/${coin.symbol}`); //https://chasing-coins.com/coin/logo/
@@ -337,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		
 
-		console.log(device, date, ip, location, browser);
+		//console.log(device, date, ip, location, browser);
 
 		crypto.logUser(device, browser, ip, date, location, function(error, success){
 			if(error){
@@ -359,26 +362,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // close DOMContentLoaded
 
-fetchCoins();  // test
-realTimePriceSocket();
-
 //socket for real time price update
 function realTimePriceSocket(){
-	const prices = new WebSocket('wss://ws.coincap.io/prices?assets=bitcoin,ethereum,monero,litecoin')
+	const prices = new WebSocket(`wss://ws.coincap.io/prices?assets=${coins}`);
+
 
 	//high: #689a74, low: #e8939c
-    prices.onmessage = function (msg) {  
-        console.log(msg.data)
-        for(let i = 0; i < assets.length; i ++){
-        	if(Number(assets[i].priceUsd) < Number(msg.data.assets[i].id)){
-        		flashColors(assets[i].id, '#689a74' )
-        	}
-        	else if(Number(assets[i].priceUsd) > Number(msg.data.assets[i].id)){
-        		flashColors(assets[i].id, '#e8939c' );
-        	}
+    prices.onmessage = function (msg1) { 
+    	var msg = JSON.parse(msg1.data);
+    	   // console.log(msg)
+    		setTimeout(function () {
+		    
+	        for(let i = 0; i < assets.length; i ++){
+	        	if(msg[assets[i].id]!= undefined)
+	        	{
+	        		if(Number(assets[i].priceUsd) < Number(msg[assets[i].id])){
+	        	        		flashColors(assets[i].id, '#689a74' )
+	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: $ ${Number(msg[assets[i].id])} </b>`;
+	        	    }
+	        	    else if(Number(assets[i].priceUsd) > Number(msg[assets[i].id])){
+	        	        		flashColors(assets[i].id, '#e8939c' );
+	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: $ ${Number(msg[assets[i].id])} </b>`;
+	        	    }
+	        	}
         }
 
-        fetchCoins();
+		  }, 5000); 
+        
+        fetchCoins();  // test
 
     }
 } //end real time price
+
+//this function refreshes the coins incase ranks have changed every 5 minute
+function refresh1(){
+	if(refresh === true)
+	{
+		setTimeout(function (){
+		  refresh = false;
+		  refresh1();
+		},60000);
+	}
+
+	else
+	{
+		fetchCoins();
+		refresh = true;
+		refresh1();
+	}
+
+
+}
+
+fetchCoins();  // test
+
+refresh1();
+
+
+
