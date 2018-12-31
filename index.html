@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Coins</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" type="text/css" href="css/chartist.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+  <!-- header  -->
+<header>
+
+	  <!-- A grey horizontal navbar that becomes vertical on small screens -->
+	  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+	    <!-- Links for the header navigation-->
+	    <ul class="navbar-nav">
+	      <li class="nav-item">
+	        <a class="nav-link" href="#">Coins</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#">Exchanges</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#">API</a>
+	      </li>
+
+	      <!--the logo and the app name should appear here  -->
+	      <li class="nav-item">
+	        <a class="nav-link" href="#">Coin Universe</a>
+	      </li>
+
+	      <li class="nav-item">
+	      	<!-- to do fill in all the possible currencies -->
+	      <select name="select" class="nav-link" style="background-color: #343a40; border: none;" onchange="changeCurrency(this[this.selectedIndex].id)">
+	      	<option id="united-states-dollar" value="united-states-dollars">USD</option>
+	      	<option id="cfa-franc-beac" value="cfa-franc-beac">XAF</option>
+	      	<option id="canadian-dollar" value="canadian-dollar">CAD</option>
+	      	<option id="nigerian-naira" value="nigerian-naira" >NGN</option>
+	      	<option id="euro" value="euro">EUR</option>
+	      </select>
+	      </li>
+	      
+
+	    </ul>
+
+	  </nav> 
+	</header>
+
+	<!-- this section is to show the top five crytocurrency -->
+	<section   class="container-fluid">
+	  <div class="row" id="chartSection" style="margin-bottom: 15px; margin-top: 15px;">
+			
+				<canvas id="pie-chart" ></canvas>
+			
+	  		    
+	  </div>
+	  <div class="row" id="marketcap" style="background-color:#007bff;border-radius: 18px;color:white;height:200px;font-family: fantasy;">
+
+	  				<div class="col-sm-5"><b>Top 100 Cryto Currencies By Market Capitalization</b></div>
+	  				<div class="col-sm-7">
+	  					<form class="form-inline" >
+						  <input type="number" placeholder="enter rank [1-100]" class="form-control mb-2 mr-sm-2" max-width="25%" id="number">
+						  <button onclick="findRank()" class="btn btn-info" style="margin-right: 5px">Find</button>
+	  					  <button id="rank" onclick="flashColors('marketcap', 'green');" class="btn btn-info">[coin here]</button>
+						</form>
+	  				</div>
+
+	  			<!-- <div style="width:15%" >
+	  				<div style="align-content: center; display: inline;">
+	  					<b>MARKET CAP</b><br>
+	  					<b>TODO Price</b>
+	  				</div>
+	  				
+	  			</div>
+	  			<div style="width:15%">
+	  				<div style="align-content: center;display: inline;">
+	  					<b>EXCHANGE VOL</b><br>
+	  					<b>TODO Price</b>
+	  				</div>
+	  			</div>
+
+	  			<div style="width:15%">
+	  				<div style="align-content: center;display: inline;">
+	  					<b>ASSETS</b><br>
+	  					<b>TODO Price</b>
+	  				</div>
+	  			</div>
+	  			<div style="width:15%">
+	  				<div style="align-content: center;display: inline;">
+	  					<b>EXCHANGES</b><br>
+	  					<b>TODO Price</b>
+	  				</div>
+	  			</div>
+
+	  			<div style="width:15%">
+	  				<div style="align-content: center;display: inline;">
+	  					<b>MARKETS</b><br>
+	  					<b>TODO Price</b>
+	  				</div>
+	  			</div>
+	  			<div style="width:15%">
+	  				<div style="align-content: center;display: inline;">
+	  					<b>BTC DOM INDEX</b><br>
+	  					<b>TODO Price</b>
+	  				</div>
+	  			</div> -->
+
+	  	</div>
+	</section>
+	<!-- end chart section-->
+
+	<!-- this section displays information about the top 100 cryto currencies available -->
+	<section id="coinSection" class="container-fluid" >
+	  <div class="container-fluid" style="background-color: white">     
+	    <div class="row" id = "cards">
+	      <!-- insert the cryto currency info here -->
+	       <!-- end inserting elements -->
+
+	    </div>
+	  </div>
+	</section>
+
+	<!-- api key for coinmarket   9a90cc4e-6800-4f28-9d16-8cb9c9e03239 -->
+
+	<footer id="footer">
+	  Copyright (c) 2018 <a href="/"><strong>Coin Universe</strong></a> All Rights Reserved.
+	  <br>
+	  API from  <a href="https://coincap.io/">coincap.io</a> <br/>
+	  <a href="https://chasing-coins.com">chasing-coins.com</a>
+	</footer>
+	<script type="application/javascript" charset="utf-8" src="js/bowser.min.js"></script>
+  	<script type="application/javascript" charset="utf-8" src="js/Chart.min.js"></script>
+  	<script type="application/javascript" charset="utf-8" src="js/chartist.min.js"></script>
+  	<script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+  	<script type="application/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+  	<script type="application/javascript" charset="utf-8" src="js/jquery.min.js"></script>
+  	<script type="application/javascript" charset="utf-8" src="js/popper.min.js"></script>
+
+</body>
+</html>

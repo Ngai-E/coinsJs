@@ -1,0 +1,129 @@
+#footer {
+  background-color: #343a40;
+  color: #ece2e2;
+  font-size: 8pt;
+  letter-spacing: 1px;
+  /*padding: 25px;*/
+  padding-top: 25px;
+  padding-bottom: 25px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+/*colours for the index page goes here*/
+
+footer a {
+  color: #d8dee4;
+}
+
+.cryto-image {
+  width: 64px;
+}
+
+.graph{
+  width: 100%;
+}
+
+.styleCard{
+  width: calc(100% - 40px);
+  margin: 20px;
+  background-color: beige;
+
+}
+
+#marketcap{
+  width: 100%;
+  padding-top: 30px;
+  margin-bottom:-120px;
+/*  padding-left: 5%;
+  padding-top: 8px;*/
+}
+
+
+#card{
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#chartSection{
+  width: 100%;
+}
+
+
+  body {
+    color: #343a40;
+  }
+
+@media screen and (max-width: 599px){
+  #marketcap{
+     margin-bottom:-20px;
+  }
+
+  #marketcap input{
+    width: 40%;
+  }
+ 
+}
+
+
+@media screen and (min-width: 576px){
+
+  #marketcap input{
+    width: 40%;
+  }
+  
+  .navbar-expand-sm .navbar-nav .nav-link {
+    padding-right: 1.5rem;
+    padding-left: .5rem;
+}
+}
+
+
+@media screen and (min-width: 600px) and (max-width: 649px){
+  .styleCard{
+    width: calc(50% - 40px);
+
+  }
+   
+
+  #chartSection{
+  width: 50%;
+}
+}
+
+@media screen and (min-width: 650px) and (max-width: 900px){
+  .styleCard{
+    width: calc(33% - 40px);
+
+  }
+   
+
+  #chartSection{
+  width: 50%;
+}
+}
+
+@media screen and (min-width: 901px) and (max-width: 1300px){
+  .styleCard{
+    width: calc(25% - 40px);
+  }
+  #chartSection{
+  width: 50%;
+}
+}
+
+@media screen and (min-width: 1301px){
+  .styleCard{
+    width: calc(20% - 40px);
+    background-color: beige;
+  }
+  #chartSection{
+  width: 50%;
+  
+}
+}
