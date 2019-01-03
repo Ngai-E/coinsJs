@@ -37,8 +37,8 @@
 
 	      <li class="nav-item">
 	      	<!-- to do fill in all the possible currencies -->
-	      <select name="select" class="nav-link" style="background-color: #343a40; border: none;" onchange="changeCurrency(this[this.selectedIndex].id)">
-	      	<option id="united-states-dollar" value="united-states-dollars">USD</option>
+	      <select name="select" id="selectCurrency" class="nav-link" style="background-color: #343a40; border: none;" onchange="changeCurrency(this[this.selectedIndex].id)">
+	      	<option id="united-states-dollar" value="united-states-dollars" selected>USD</option>
 	      	<option id="cfa-franc-beac" value="cfa-franc-beac">XAF</option>
 	      	<option id="canadian-dollar" value="canadian-dollar">CAD</option>
 	      	<option id="nigerian-naira" value="nigerian-naira" >NGN</option>
@@ -50,6 +50,10 @@
 	    </ul>
 
 	  </nav> 
+	  <select name="view" id="selectView" class="nav-link" style="background-color: #007bff; border: none;" onchange="changeView(this[this.selectedIndex].id)">
+	  	<option id="cardsview">card view</option>
+	  	<option id="tableview" selected>table view</option>
+	  </select>
 	</header>
 
 	<!-- this section is to show the top five crytocurrency -->
@@ -71,49 +75,15 @@
 						</form>
 	  				</div>
 
-	  			<!-- <div style="width:15%" >
-	  				<div style="align-content: center; display: inline;">
-	  					<b>MARKET CAP</b><br>
-	  					<b>TODO Price</b>
-	  				</div>
-	  				
-	  			</div>
-	  			<div style="width:15%">
-	  				<div style="align-content: center;display: inline;">
-	  					<b>EXCHANGE VOL</b><br>
-	  					<b>TODO Price</b>
-	  				</div>
-	  			</div>
-
-	  			<div style="width:15%">
-	  				<div style="align-content: center;display: inline;">
-	  					<b>ASSETS</b><br>
-	  					<b>TODO Price</b>
-	  				</div>
-	  			</div>
-	  			<div style="width:15%">
-	  				<div style="align-content: center;display: inline;">
-	  					<b>EXCHANGES</b><br>
-	  					<b>TODO Price</b>
-	  				</div>
-	  			</div>
-
-	  			<div style="width:15%">
-	  				<div style="align-content: center;display: inline;">
-	  					<b>MARKETS</b><br>
-	  					<b>TODO Price</b>
-	  				</div>
-	  			</div>
-	  			<div style="width:15%">
-	  				<div style="align-content: center;display: inline;">
-	  					<b>BTC DOM INDEX</b><br>
-	  					<b>TODO Price</b>
-	  				</div>
-	  			</div> -->
+	  			
 
 	  	</div>
+
+	  	
 	</section>
 	<!-- end chart section-->
+
+	
 
 	<!-- this section displays information about the top 100 cryto currencies available -->
 	<section id="coinSection" class="container-fluid" >
@@ -123,6 +93,28 @@
 	       <!-- end inserting elements -->
 
 	    </div>
+
+			    <!-- table view of data -->
+			<div>
+				  <table class="table" id="table" style="display: none;">
+				    <thead>
+				      <tr>
+				        <th>rank</th>
+				        <th>Name</th>
+				        <th>Price</th>
+				        <th>Market Cap</th>
+				        <th>Supply</th>
+				        <th>Volume(24Hr)</th>
+				        <th>Change(24Hr)</th>
+				        <th>Price Graph (7d)</th>
+				      </tr>
+				    </thead>
+				    <tbody id="tbody">
+				      
+				    </tbody>
+				  </table>
+			</div>
+			<!-- end table view format -->
 	  </div>
 	</section>
 

@@ -5,6 +5,7 @@ let refresh = true; // used to refresh the page
 let currencySymbol = '$';
 let preferredCurrency = 'united-states-dollar';
 let conversionRates = 1;
+let view = 'table';  //view can either be in table formats or cards
 class crypto {
 	static getAssetsInfo(callback){
 		//alert('test'); //
@@ -183,6 +184,7 @@ function highlightChange(percent){
 //function to change the currency
 function changeCurrency(currency){
 	preferredCurrency = currency;
+	
 	console.log(currency);
 	let url = `https://api.coincap.io/v2/rates/${currency}`;
 	fetch(url)
@@ -237,12 +239,12 @@ function flashColors(id, color){
 	
 }
 
-//display the coins
-function fillCoinsHTML(asset = assets){
+//display the info in card form
+function cardHtml(){
 	let rows = document.getElementById('cards');
 	const divcard = document.createElement('div');
 	divcard.setAttribute('class', 'divcard');
-	asset.forEach(function coins(coin){
+	assets.forEach(function coins(coin){
 
 		const card = document.createElement('div') //create a bootstrap card element
 		card.className = 'card styleCard';
@@ -266,7 +268,7 @@ function fillCoinsHTML(asset = assets){
               <span style="display: block;" id = 'volume${coin.id}'>Volume(24Hr): ${currencySymbol} ${(Number(coin.volumeUsd24Hr).toFixed(2))/conversionRates}</span>
               <span style="display: block;" id = 'marketCap${coin.id}'>Market Cap: ${currencySymbol} ${(Number(coin.marketCapUsd).toFixed(2))/conversionRates}</span>
             </p>
-            <div class = 'graph' id= '${coin.id}'>Price Graph (7d)</div>`;
+            <div class = 'graph' id= '${coin.id}'></div>`;
 
         card.append(logo);
         card.append(cardBody);
@@ -277,7 +279,69 @@ function fillCoinsHTML(asset = assets){
 	});
 
 	rows.innerHTML = divcard.innerHTML;
-	
+	changeCurrency(changeCurrency($('#selectCurrency :selected').val()));
+}
+
+// //display the info in table form
+ function tableHtml(){
+	const row = document.getElementById('tbody');
+	assets.forEach(function coins(coin){
+		 rowData = document.createElement('tr');
+		 rowData.setAttribute('id', `${coin.id}`)
+		rowData.innerHTML = `	<td>${coin.rank}</td>
+				        <td>
+				        	<img style='width:50px' src="https://chasing-coins.com/coin/logo/${coin.symbol}">
+				        	<div style="display:inline-block">
+				        		<span>${coin.name}</span>
+				        		<p>${coin.symbol}</p>
+				        	</div>
+				        </td>
+				        <td>
+				        	<span style="display: block;" id = 'price${coin.id}'><b>${currencySymbol}${(Number(coin.priceUsd))/ conversionRates} </b></span>
+				        </td>
+				        <td>
+				        	<span style="display: block;" id = 'marketCap${coin.id}'>${currencySymbol}${(Number(coin.marketCapUsd).toFixed(2))/conversionRates}</span>
+				        	
+				        </td>
+				        <td>
+				        	<span style="display: block;">${Number(coin.supply).toFixed(2)}</span>
+				        </td>
+				        <td>
+				        	<span style="display: block;" id = 'volume${coin.id}'> ${currencySymbol}${(Number(coin.volumeUsd24Hr).toFixed(2))/conversionRates}</span>
+				        </td>
+				        <td>
+				        	<span style="display: block;">
+				        	${highlightChange(Number(coin.changePercent24Hr).toFixed(2))}
+				        	</span>
+				        </td>
+				        <div class = 'graph' id= '${coin.id}'></div>
+
+				      `
+
+		row.append(rowData)
+	});
+	changeCurrency(changeCurrency($('#selectCurrency :selected').val()));
+ }
+
+function changeView(selectedView){
+	view = selectedView;
+	//alert(selectedView);
+	//alert($('#selectCurrency :selected').val());
+	if (view == 'cardsview')
+		{
+			//alert(view)
+			document.getElementById('table').style.display = 'none';
+			document.getElementById('cards').style.display = '';
+			cardHtml();
+		}
+	else
+		{
+			//alert(view)
+			document.getElementById('cards').style.display = 'none';
+			document.getElementById('table').style.display = '';
+			tableHtml();
+
+		}
 
 	//display the graph
 	let graph = document.getElementsByClassName('graph');
@@ -286,11 +350,17 @@ function fillCoinsHTML(asset = assets){
 		plotgraphs(`https://api.coincap.io/v2/assets/${graph[div].id}/history?interval=h12&start=
 			${new Date().setDate(new Date().getDate()-7)}&end=${new Date().getTime()}`, graph[div].id)
 	}
-	// for (let div of graph){
-	// 	console.log(div.id);
-	// 	plotgraphs(`https://api.coincap.io/v2/assets/${div.id}/history?interval=h12&start=
-	// 		${new Date().setDate(new Date().getDate()-7)}&end=${new Date().getTime()}`)
-	// }
+
+	
+}
+
+//display the coins
+function fillCoinsHTML(asset = assets){
+
+	changeView($('#selectCurrency :selected').val());
+	
+
+	
 
 } //end function to display coins
 
@@ -380,11 +450,11 @@ function realTimePriceSocket(){
 	        	{
 	        		if(Number(assets[i].priceUsd) < Number(msg[assets[i].id])){
 	        	        		flashColors(assets[i].id, '#689a74' )
-	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: ${currencySymbol} ${(Number(msg[assets[i].id])/conversionRates)} </b>`;
+	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: ${currencySymbol}${(Number(msg[assets[i].id])/conversionRates)} </b>`;
 	        	    }
 	        	    else if(Number(assets[i].priceUsd) > Number(msg[assets[i].id])){
 	        	        		flashColors(assets[i].id, '#e8939c' );
-	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: ${currencySymbol} ${(Number(msg[assets[i].id]))/conversionRates} </b>`;
+	        	        		document.getElementById(`price${assets[i].id}`).innerHTML = `<b>price: ${currencySymbol}${(Number(msg[assets[i].id]))/conversionRates} </b>`;
 	        	    }
 	        	}
         }
@@ -403,7 +473,7 @@ function refresh1(){
 		setTimeout(function (){
 		  refresh = false;
 		  refresh1();
-		},6000000);
+		},600000);
 	}
 
 	else
